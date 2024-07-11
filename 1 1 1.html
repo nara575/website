@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>옷장</title>
+    <style>
+        @font-face {
+            font-family: 'Ownglyph_meetme-Rg';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body {
+            font-family: 'Ownglyph_meetme-Rg', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            background-color: rgb(178, 209, 153);
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            color: white;
+            font-size: 35px;
+            -webkit-text-stroke: 2px #111111; /* h1 폰트 테두리 색상 및 두께 설정 */
+            text-shadow:
+                2px 2px 0 rgb(178, 209, 153),
+                -2px 2px 0 rgb(178, 209, 153),
+                2px -2px 0 rgb(178, 209, 153),
+                -2px -2px 0 rgb(178, 209, 153);
+        }
+        main {
+            width: 80%;
+            max-width: 1200px;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            font-size: 25px;
+        }
+        h1 {
+            color: #fcfffd;
+        }
+        h2 {
+            color: #242121;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        input, select, button {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: rgb(178, 209, 153);
+            color: rgb(0, 0, 0);
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: rgb(61, 179, 15);
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #000000;
+        }
+        #recommendation {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #ffeb3b;
+            border-radius: 5px;
+            text-align: center;
+        }
+        #clothes-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .clothes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .clothes-item {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .clothes-item img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        /* 시계 스타일 */
+        .clock {
+            font-family: 'Ownglyph_meetme-Rg';
+            font-size: 1.5rem;
+            color: #333; /* 시계의 글자 색상 */
+            background-color: #f0f0f0; /* 시계의 배경색 */
+            padding: 5px 10px; /* 시계 내부 여백 */
+            border-radius: 5px; /* 시계의 모서리를 둥글게 만듦 */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* 시계에 그림자 효과 추가 */
+        }
+        .hidden {
+            display: none;
+        }
+        .remove-button {
+            margin-left: 10px;
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .remove-button:hover {
+            background-color: #ff1a1a;
+        }
+        /* 추가된 CSS 코드 */
+        .preview-image {
+            width: 100px;
+            height: auto;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>옷장</h1>
+    </header>
+    <main>
+        <section id="add-clothes">
+            <div class="add-clothes-header">
+                <h2>새로운 옷 추가</h2>
+                <div style="display: flex; align-items: center;">
+                    <span id="clock" class="clock"></span>
+                    <span id="date" class="date"></span>
+                </div>
+            </div>
+            <form id="clothes-form">
+                <label for="clothes-name">옷 이름:</label>
+                <input type="text" id="clothes-name" name="clothes-name" required>
+                <label for="clothes-type">옷 종류:</label>
+                <select id="clothes-type" name="clothes-type" required>
+                    <option value="상의">상의</option>
+                    <option value="하의">하의</option>
+                    <option value="신발">신발</option>
+                    <option value="양말">양말</option>
+                </select>
+                <label for="season">계절:</label>
+                <select id="season" name="season" required>
+                    <option value="봄">봄</option>
+                    <option value="여름">여름</option>
+                    <option value="가을">가을</option>
+                    <option value="겨울">겨울</option>
+                </select>
+                <label for="expiry-date">기한:</label>
+                <input type="date" id="expiry-date" name="expiry-date" required>
+                <label for="clothes-image">옷 사진:</label>
+                <input type="file" id="clothes-image" name="clothes-image" accept="image/*" required>
+                <img id="preview" class="preview-image" src="#" alt="미리보기" style="display: none;">
+                <button type="submit">추가</button>
+            </form>
+        </section>
+        <section id="clothes-list">
+            <h2>옷 목록</h2>
+            <div id="list"></div>
+        </section>
+        <section id="recommendation">
+            <h2>추천</h2>
+            <p id="recommendation-text">추천할 항목이 여기에 나타납니다.</p>
+        </section>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 시계 업데이트 함수
+            function updateClock() {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                const timeFormatted = `${hours}:${minutes}:${seconds}`;
+
+                document.getElementById('clock').textContent = timeFormatted;
+            }
+
+            // 날짜 업데이트 함수
+            function updateDate() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                const day = now.getDate().toString().padStart(2, '0');
+                const dateFormatted = `${year}-${month}-${day}`;
+
+                document.getElementById('date').textContent = dateFormatted;
+            }
+
+            // 시계와 날짜를 1초마다 업데이트
+            setInterval(updateClock, 1000);
+            updateClock(); // 초기 호출
+            updateDate(); // 초기 호출
+
+            // localStorage에서 옷 데이터 가져와서 리스트에 추가
+            const clothesData = JSON.parse(localStorage.getItem('clothesList')) || [];
+            clothesData.forEach(clothes => {
+                addClothesToList(clothes.name, clothes.type, clothes.season, clothes.expiry, clothes.imageUrl);
+            });
+
+            // Form 제출 이벤트 리스너
+            document.getElementById('clothes-form').addEventListener('submit', function(event) {
+                event.preventDefault(); // 기본 제출 동작 방지
+
+                // Form 입력 값 가져오기
+                const clothesName = document.getElementById('clothes-name').value;
+                const clothesType = document.getElementById('clothes-type').value;
+                const season = document.getElementById('season').value;
+                const expiryDate = document.getElementById('expiry-date').value;
+                const clothesImage = document.getElementById('clothes-image').files[0];
+
+                // 리스트에 중복된 이름이 있는지 확인
+                const clothesList = document.querySelectorAll('.clothes-item h3');
+                let isDuplicate = false;
+                clothesList.forEach(item => {
+                    if (item.textContent === clothesName) {
+                        isDuplicate = true;
+                        // 중복 경고 메시지 표시
+                        alert('중복되는 옷 이름입니다. 다른 이름을 사용해주세요.');
+                        return;
+                    }
+                });
+
+                // 기한 선택 여부 확인
+                if (!expiryDate) {
+                    alert('기한을 선택해주세요.');
+                    return;
+                }
+
+                // 중복이 없고 기한이 선택되었으면 리스트에 추가하고 localStorage에 저장
+                if (!isDuplicate) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imageUrl = e.target.result;
+                        addClothesToList(clothesName, clothesType, season, expiryDate, imageUrl);
+                        saveClothesToLocalStorage(clothesName, clothesType, season, expiryDate, imageUrl);
+                    };
+                    if (clothesImage) {
+                        reader.readAsDataURL(clothesImage); // 파일을 데이터 URL로 변환
+                    }
+
+                    // 제출 후 폼 초기화
+                    document.getElementById('clothes-form').reset();
+
+                    // 미리보기 이미지 숨기기
+                    hidePreviewImage();
+                }
+            });
+
+            // 미리보기 이미지 숨기는 함수
+            function hidePreviewImage() {
+                const previewImage = document.getElementById('preview');
+                previewImage.style.display = 'none';
+                previewImage.setAttribute('src', '#');
+            }
+
+            // 옷 목록에 옷 항목 추가하는 함수
+            function addClothesToList(name, type, season, expiry, imageUrl) {
+                const list = document.getElementById('list');
+
+                const item = document.createElement('div');
+                item.classList.add('clothes-item');
+
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.alt = name;
+                item.appendChild(img);
+
+                const content = document.createElement('div');
+                content.classList.add('clothes-item-content');
+
+                const header = document.createElement('div');
+                header.classList.add('clothes-header');
+
+                const itemName = document.createElement('h3');
+                itemName.textContent = name;
+                header.appendChild(itemName);
+
+                const removeButton = document.createElement('button');
+                removeButton.textContent = '제거';
+                removeButton.classList.add('remove-button');
+                removeButton.addEventListener('click', function() {
+                    removeClothesFromList(item, name);
+                });
+                header.appendChild(removeButton);
+
+                content.appendChild(header);
+
+                const itemType = document.createElement('p');
+                itemType.textContent = `종류: ${type}`;
+                content.appendChild(itemType);
+
+                const itemSeason = document.createElement('p');
+                itemSeason.textContent = `계절: ${season}`;
+                content.appendChild(itemSeason);
+
+                const itemExpiry = document.createElement('p');
+                itemExpiry.textContent = `기한: ${expiry}`;
+                content.appendChild(itemExpiry);
+
+                item.appendChild(content);
+
+                // 클릭 시 항목 세부 정보 토글
+                item.addEventListener('click', function() {
+                    const itemContent = item.querySelector('.clothes-item-content');
+                    itemContent.classList.toggle('hidden');
+                });
+
+                list.appendChild(item);
+            }
+
+            // 옷 목록에서 옷 항목 삭제하는 함수
+            function removeClothesFromList(item, name) {
+                const list = document.getElementById('list');
+                list.removeChild(item);
+
+                // localStorage에서 삭제
+                let clothesData = JSON.parse(localStorage.getItem('clothesList')) || [];
+                clothesData = clothesData.filter(clothes => clothes.name !== name);
+                localStorage.setItem('clothesList', JSON.stringify(clothesData));
+            }
+
+            // 옷 데이터를 localStorage에 저장하는 함수
+            function saveClothesToLocalStorage(name, type, season, expiry, imageUrl) {
+                const clothesData = JSON.parse(localStorage.getItem('clothesList')) || [];
+                clothesData.push({ name, type, season, expiry, imageUrl });
+                localStorage.setItem('clothesList', JSON.stringify(clothesData));
+            }
+        });
+
+        // 파일 선택 시 미리보기 이미지 업데이트
+        document.getElementById('clothes-image').addEventListener('change', function() {
+            const file = this.files[0];
+            const previewImage = document.getElementById('preview');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.style.display = 'block';
+                    previewImage.setAttribute('src', e.target.result);
+                };
+                reader.readAsDataURL(file); // 파일을 데이터 URL로 변환
+            } else {
+                previewImage.style.display = 'none';
+                previewImage.setAttribute('src', '#');
+            }
+        });
+    </script>
+</body>
+</html>
